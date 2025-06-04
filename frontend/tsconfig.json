@@ -1,7 +1,28 @@
 {
+  "compilerOptions": {
+    "composite": true,
+    "esModuleInterop": true,
+    "module": "ESNext",
+    "moduleResolution": "Node",
+    "jsx": "react-jsx",
+    "allowSyntheticDefaultImports": true,
+    "types": [
+      "jest",
+      "node"
+    ]
+  },
   "files": [],
+  "include": [
+    "src/**/*.ts",
+    "src/**/*.tsx",
+    "*.js",
+    "*.ts",
+    "src/**/*.test.ts",
+    "src/**/*.test.tsx"
+  ],
   "references": [
-    { "path": "./tsconfig.app.json" },
-    { "path": "./tsconfig.node.json" }
-  ]
+    { "path": "./tsconfig.node.json" },
+    { "path": "./tsconfig.app.json" }
+  ],
+  "exclude": ["node_modules"]
 }

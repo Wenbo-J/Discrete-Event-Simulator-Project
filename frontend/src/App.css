@@ -2,4 +2,117 @@
   max-width: 800px;
   margin: 0 auto;
   text-align: center;
+  padding: 20px;
+  font-family: sans-serif;
+}
+
+.simulation-controls {
+  margin-bottom: 20px;
+  padding: 15px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  background-color: #f9f9f9;
+}
+
+.simulation-controls h2 {
+  margin-top: 0;
+}
+
+.simulation-controls div {
+  margin-bottom: 10px;
+  display: flex;
+  gap: 20px;
+  align-items: center;
+}
+
+.simulation-controls label {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  font-size: 0.9em;
+}
+
+.simulation-controls input[type="number"] {
+  padding: 8px;
+  border-radius: 4px;
+  border: 1px solid #ddd;
+  width: 100px; /* Adjust as needed */
+}
+
+.simulation-controls button {
+  padding: 10px 15px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 1em;
+}
+
+.simulation-controls button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+.load-factor-display {
+  margin-top: 10px;
+  padding: 10px;
+  background-color: #eef;
+  border-radius: 4px;
+  border: 1px solid #cce;
+  font-size: 0.9em;
+}
+
+.load-factor-display p {
+  margin: 5px 0;
+}
+
+.error-message {
+  color: red;
+  margin-top: 10px;
+}
+
+/* Table row highlighting styles */
+.some-left td {
+  background-color: #fff3cd; /* Light yellow for any left customers */
+}
+
+.high-left td {
+  background-color: #ffe0b3; /* Light orange for >10% left */
+}
+
+.very-high-left td {
+  background-color: #ffc8b3; /* Light red for >50% left */
+}
+
+.very-high-wait td {
+  /* Use a different shade if both conditions met, or let one override */
+  /* For example, make wait override left if it's more critical */
+  background-color: #ffb3b3 !important; /* Stronger red for very high wait, use !important if needed */
+  font-weight: bold;
+}
+
+/* Ensure a combined class (e.g., .some-left.very-high-wait) can be styled if needed */
+.some-left.very-high-wait td,
+.high-left.very-high-wait td,
+.very-high-left.very-high-wait td {
+  background-color: #ffb3b3 !important; /* Override with the high wait color */
+  font-weight: bold;
+}
+
+/* Default table styling if you don't have it elsewhere */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+
+th, td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: left;
+}
+
+th {
+  background-color: #f2f2f2;
 }
