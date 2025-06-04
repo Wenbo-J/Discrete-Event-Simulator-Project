@@ -15,6 +15,10 @@ class DoneEvent extends Event {
         return 1;
     }
 
+    int getServerID() {
+        return this.serverID;
+    }
+
     public String toString() {
         String serverStr = shop.accessParticularServer(serverID).isHuman() 
             ? String.valueOf(serverID) : String.format("self-check %d", serverID);

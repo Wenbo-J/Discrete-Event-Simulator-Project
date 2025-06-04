@@ -73,14 +73,11 @@ class Simulator {
             Event theNextEvent = pairES.first();
             Shop updatedShop = pairES.second();
 
-            if (event.toString().contains("done")) {
-                String eventStr = event.toString();
-                int length = eventStr.length();
-                int serverID = Character.getNumericValue(eventStr.charAt(length - 1));
-
-                if (serverID > numOfServers) {
-                    // if the server isn't human
-                    serverID = numOfServers + 1;
+            if (event instanceof DoneEvent) {
+                int serverID = ((DoneEvent) event).getServerID();
+                Server eventServer = shop.accessParticularServer(serverID);
+                if (!eventServer.isHuman()) {
+                    serverID = eventServer.getID();
                 }
 
 
