@@ -1,3 +1,4 @@
+package simulator;
 abstract class Event {
     protected final Customer customer;
     protected final double occurTime;

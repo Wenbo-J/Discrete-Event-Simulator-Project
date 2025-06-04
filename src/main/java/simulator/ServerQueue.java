@@ -1,3 +1,4 @@
+package simulator;
 class ServerQueue {
     // This ServerQueue is based on Immutable PQ instead of normal Queue
     // it is theoretically achieved by having the customer arrivalTime as the priority metric

@@ -1,3 +1,4 @@
+package simulator;
 class Shop {
     private final ImList<Server> servers;
     private final Statistics stats;

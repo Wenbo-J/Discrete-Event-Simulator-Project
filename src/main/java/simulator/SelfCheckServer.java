@@ -1,3 +1,4 @@
+package simulator;
 class SelfCheckServer extends Server {
     private final int numOfSelfChecks;
     private final ImList<Counter> counters;

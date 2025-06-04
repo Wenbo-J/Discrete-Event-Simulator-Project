@@ -1,3 +1,4 @@
+package simulator;
 class Counter {
     private final int name;
     private final double occupiedUntil;

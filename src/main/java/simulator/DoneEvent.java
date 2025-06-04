@@ -1,3 +1,4 @@
+package simulator;
 class DoneEvent extends Event {
     private final int serverID;
 

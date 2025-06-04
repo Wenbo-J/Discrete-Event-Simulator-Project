@@ -132,3 +132,21 @@ Next steps / things to explore
 This overview should help you navigate the repository, understand how the event-driven simulation is structured, and offer ideas for future learning and development.
 
 
+
+Spring Boot REST API
+--------------------
+A simple Spring Boot server is included under `src/main/java/com/example/simserver`.
+It exposes a `/simulate` endpoint that runs the simulator with default
+parameters and returns the formatted statistics string.
+
+Build the project with Gradle and run the application:
+
+```
+./gradlew bootRun
+```
+
+The endpoint can be tested locally using `curl`:
+
+```
+curl 'http://localhost:8080/simulate'
+```
