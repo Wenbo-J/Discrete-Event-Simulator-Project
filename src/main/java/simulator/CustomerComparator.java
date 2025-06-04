@@ -1,3 +1,4 @@
+package simulator;
 import java.util.Comparator;
 
 class CustomerComparator implements Comparator<Customer> {

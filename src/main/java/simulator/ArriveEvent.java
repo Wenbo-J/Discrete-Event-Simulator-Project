@@ -1,3 +1,4 @@
+package simulator;
 class ArriveEvent extends Event {
     private static final int ARRIVE_PRIO = 4;
 

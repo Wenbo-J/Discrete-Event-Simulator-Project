@@ -1,3 +1,4 @@
+package simulator;
 class LeaveEvent extends Event {
 
     LeaveEvent(Customer customer, double leavingTime, Shop shop) {

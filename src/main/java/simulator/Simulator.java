@@ -1,3 +1,4 @@
+package simulator;
 import java.util.function.Supplier;
 
 class Simulator {

@@ -1,3 +1,4 @@
+package simulator;
 class ServeEvent extends Event {
     private final int serverID;
     private final boolean prevWasDone;

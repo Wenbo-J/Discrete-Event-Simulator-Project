@@ -1,3 +1,4 @@
+package simulator;
 import java.util.Comparator;
 
 class EventComparator implements Comparator<Event> {

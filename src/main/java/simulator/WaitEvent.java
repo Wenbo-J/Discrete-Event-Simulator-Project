@@ -1,3 +1,4 @@
+package simulator;
 class WaitEvent extends Event {
     private final Server server;
     private static final int WAIT_PRIO = 5;

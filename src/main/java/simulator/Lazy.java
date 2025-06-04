@@ -1,3 +1,4 @@
+package simulator;
 import java.util.function.Supplier;
 import java.util.NoSuchElementException;
 import java.util.Optional;

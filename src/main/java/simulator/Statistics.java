@@ -1,3 +1,4 @@
+package simulator;
 class Statistics {
     // This class deals with the statistics of the simulation
     private final double totalWaitTime;
