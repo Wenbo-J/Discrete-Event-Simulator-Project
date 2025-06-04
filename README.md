@@ -1,3 +1,4 @@
+
 Overview
 
 The project is a Java-based discrete‑event simulator. The entry point is Main.java, which reads simulation parameters from standard input and constructs a Simulator instance. The simulator sets up servers, self‑check counters, and the initial event queue. Then it repeatedly processes events until the queue is empty.
@@ -129,3 +130,5 @@ Next steps / things to explore
     Scalability: Explore more sophisticated scheduling algorithms or multi-threaded versions if you want to simulate larger systems.
 
 This overview should help you navigate the repository, understand how the event-driven simulation is structured, and offer ideas for future learning and development.
+
+
