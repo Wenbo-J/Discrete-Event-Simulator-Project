@@ -1,7 +1,7 @@
 package simulator;
 import java.util.function.Supplier;
 
-class Simulator {
+public class Simulator {
     private final int numOfServers;
     private final int numOfSelfChecks;
     private final int qmax;
@@ -10,18 +10,18 @@ class Simulator {
     private static final int SERVER_NEED_REST = -2;
     private static final double SMALL_NUMBER = 0.000001;
 
-    Simulator(int numOfServers, int qmax, ImList<Pair<Double,Supplier<Double>>> inputTimes) {
+    public Simulator(int numOfServers, int qmax, ImList<Pair<Double,Supplier<Double>>> inputTimes) {
         this(numOfServers, qmax, inputTimes, () -> 0.0);
     }
 
-    Simulator(int numOfServers,
+    public Simulator(int numOfServers,
             int qmax,
             ImList<Pair<Double,Supplier<Double>>> inputTimes,
             Supplier<Double> restTimes) {
         this(numOfServers, 0, qmax, inputTimes, restTimes);
     }
 
-    Simulator(int numOfServers,
+    public Simulator(int numOfServers,
             int numOfSelfChecks,
             int qmax,
             ImList<Pair<Double,Supplier<Double>>> inputTimes,
@@ -33,7 +33,7 @@ class Simulator {
         this.restTimes = restTimes;
     }
 
-    String simulate() {
+    public String simulate() {
 
         ImList<Server> servers = new ImList<Server>();
         for (int i = 1; i < numOfServers + 1; i++) {

@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import java.util.List;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -47,5 +48,22 @@ public class SimulatorController {
     @GetMapping("/simulations/{id}")
     public SimulationResult getResult(@PathVariable Long id) {
         return repository.findById(id).orElse(null);
+    }
+
+    @GetMapping("/metrics")
+    public SystemMetrics metrics() {
+        List<SimulationResult> all = repository.findAll();
+        if (all.isEmpty()) {
+            return new SystemMetrics(0.0, 0);
+        }
+        double sum = 0.0;
+        for (SimulationResult r : all) {
+            String result = r.getResult();
+            java.util.regex.Matcher m = java.util.regex.Pattern.compile("\\[(?<avg>[\\d.]+) \\d+ \\d+\\]").matcher(result);
+            if (m.find()) {
+                sum += Double.parseDouble(m.group("avg"));
+            }
+        }
+        return new SystemMetrics(sum / all.size(), all.size());
     }
 }
