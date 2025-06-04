@@ -1,19 +1,162 @@
-# Discrete Event Simulator Extraordinaire! 🚀\n\nWelcome to a rather spiffy **Scalable Web Platform for Discrete-Event System Simulation**! This project is designed to simulate complex systems, visualize their performance, and provide real-time (well, near real-time after each simulation run!) observability. We're building this with a robust stack and an eye towards a truly interactive and insightful experience.\n\nOur grand vision is to simulate everything from bustling intergalactic spaceports to the queue at your local coffee shop, complete with snazzy charts and metrics.\n\n## Core Goals (The Grand Plan)\n\n*   **Build an OOP-based modular event simulation engine** with a REST API (Spring Boot & PostgreSQL/H2).\n*   **Develop a React (TypeScript) Single Page Application** with Chart.js to display system state and live performance metrics.\n*   Containerize and deploy on AWS Fargate with CI/CD via GitHub Actions (Future Goal!).\n*   Integrate Prometheus & Grafana for enhanced real-time metrics visualization (Future Goal!).\n*   Achieve glorious test coverage with 80+ unit/integration tests using JUnit/Jest (Ongoing!).\n\n## Technologies Powering the Awesomeness\n\n*   **Backend:** Java, Spring Boot, Spring Data JPA\n*   **Database:** PostgreSQL (production target), H2 (for easy local development)\n*   **Frontend:** TypeScript, React, Vite, Chart.js\n*   **Testing (Backend):** JUnit (to be expanded)\n*   **Testing (Frontend):** Jest, React Testing Library\n*   **Containerization (Future):** Docker\n*   **Monitoring (Future):** Micrometer, Prometheus, Grafana\n\n## Current State: What's Cooking? 🍳\n\nThe project currently features:\n\n1.  **Spring Boot Backend:**\n    *   A REST API (`/simulate`, `/simulations`, `/metrics`) to run simulations and retrieve results.\n    *   Simulation results are persisted to a database (H2 for local dev, PostgreSQL configurable).\n    *   Simulation logic now incorporates **randomness** using exponential distributions for:\n        *   Inter-arrival times of customers.\n        *   Service times for customers.\n    *   The core simulation engine (from the original project) processes these events.\n\n2.  **React Frontend:**\n    *   A user interface to input simulation parameters:\n        *   Number of Servers\n        *   Number of Self-Checkout stations\n        *   Maximum Queue Length (`qmax`)\n        *   Number of Customers to simulate\n        *   Mean Inter-Arrival Time (for random arrival generation)\n        *   Mean Service Time (for random service time generation)\n    *   **Dynamic Chart Visualization:** Displays Average Wait Time, Customers Served, and Customers Left for each simulation run, using a dual-axis chart for clarity.\n    *   **Simulation History Table:** Lists all past simulation runs with their parameters and detailed results.\n        *   **Conditional Highlighting:** Rows are highlighted based on the number of customers who left or if average wait times are particularly high, making it easy to spot critical outcomes.\n    *   **Theoretical Load Factor (\( \\rho \)) Display:** Calculates and shows the system load factor based on the current input parameters, providing instant feedback on expected system stress.\n\n## Getting Up and Running\n\nReady to simulate some chaos? Here's how:\n\n### 1. Backend (The Brains - Spring Boot)\n\n*   **Prerequisites:**\n    *   Java 21 JDK (or newer) installed.\n    *   Ensure your `JAVA_HOME` environment variable is set correctly, or configure `org.gradle.java.home` in a `gradle.properties` file in the project root.\n*   **Run it:**\n    1.  Open a terminal in the project\'s root directory.\n    2.  Make the Gradle wrapper executable (if you haven\'t already):\n        ```bash\n        chmod +x gradlew\n        ```\n    3.  Start the application:\n        ```bash\n        ./gradlew bootRun\n        ```\n    *   The backend will start on `http://localhost:8080` by default.\n    *   For local development, it\'s configured to use an H2 in-memory database. You can access the H2 console at `http://localhost:8080/h2-console` (JDBC URL: `jdbc:h2:mem:testdb`, User: `sa`, no password).\n\n### 2. Frontend (The Pretty Face - React)\n\n*   **Prerequisites:**\n    *   Node.js and npm (or yarn) installed.\n*   **Run it:**\n    1.  Open another terminal.\n    2.  Navigate to the `frontend` directory: `cd frontend`\n    3.  Install dependencies:\n        ```bash\n        npm install \n        # or if you use yarn: yarn install\n        ```\n    4.  Start the development server:\n        ```bash\n        npm run dev\n        # or: yarn dev\n        ```\n    *   The frontend will typically open in your browser at `http://localhost:5173`.\n    *   API requests from the frontend are proxied to the backend running on port 8080, thanks to the Vite proxy configuration.\n\n### 3. Simulate!\n\nOnce both backend and frontend are running:\n*   Open the frontend URL in your browser.\n*   Tweak the simulation parameters. Observe the calculated **Theoretical System Load (\( \\rho \))** change as you adjust inputs!\n*   Hit \"Run Simulation\" and watch the magic happen!\n*   The chart will update with metrics from your simulation runs (Average Wait Time, Customers Served, Customers Left).\n*   The \"Simulation History\" table will populate, highlighting interesting or problematic runs.\n\n## Understanding Simulation Parameters (In the UI)\n\n*   **Servers:** Number of regular, human-operated service points.\n*   **Self-Checkouts:** Number of self-service points. These are functionally similar to regular servers in the current simulation logic.\n*   **Max Queue Length (qmax):** The maximum number of customers that can wait in the queue for *all service points combined*. If a customer arrives and the queue is full, they will leave.\n*   **Customers:** The total number of customers that will enter the system during the simulation run.\n*   **Mean Inter-Arrival Time:** The average time *between* consecutive customer arrivals. Uses an exponential distribution to generate random arrival intervals.\n*   **Mean Service Time:** The average time it takes for one service point (server or self-checkout) to serve one customer. Uses an exponential distribution to generate random service durations.\n\n## Future Adventures & Areas to Explore\n\nThis project is ripe for expansion! Here are some ideas:\n\n*   **Advanced Randomness:**\n    *   Introduce random server rest times (parameter `meanRestTime` is a placeholder).\n    *   Allow selection of different random number distributions (e.g., Normal, Uniform) for arrivals and service times.\n    *   Seedable random number generator for reproducible simulation runs.\n*   **Core Simulator Enhancements:**\n    *   More sophisticated server logic (e.g., server-specific queues, priority customers, server breakdowns).\n    *   More detailed event tracking for finer-grained analysis.\n*   **Enhanced Visualization:**\n    *   Real-time (or pseudo-real-time) animation of queue lengths and server states (this is a big one!).\n    *   More diverse chart types for different metrics.\n*   **Testing, Testing, Testing:**\n    *   Expand backend JUnit test coverage for the simulation engine and controller logic.\n    *   Add more Jest/React Testing Library tests for frontend components and interactions.\n*   **DevOps & Deployment:**\n    *   Full Dockerization of frontend and backend.\n    *   Set up `docker-compose` for streamlined local multi-container development.\n    *   CI/CD pipeline using GitHub Actions to build, test, and deploy to AWS Fargate.\n*   **Monitoring:**\n    *   Integrate Micrometer with the Spring Boot backend.\n    *   Expose metrics for Prometheus and visualize them in Grafana.\n\nEnjoy your simulation journey! If you break it, you get to keep both pieces (and hopefully learn something cool). Contributions and bright ideas are always welcome!
+Discrete Event Simulator 
 
-Spring Boot REST API
---------------------
-A simple Spring Boot server is included under `src/main/java/com/example/simserver`.
-It exposes a `/simulate` endpoint that runs the simulator with default
-parameters and returns the formatted statistics string.
+Welcome to a rather spiffy Scalable Web Platform for Discrete-Event System Simulation. This project simulates complex systems, visualizes performance, and provides near real-time observability. Whether you're modeling intergalactic spaceports or coffee shop queues, this platform has you covered — complete with snazzy charts and insightful metrics.
+ Core Goals (The Grand Plan)
 
-Build the project with Gradle and run the application:
+    Modular OOP-Based Event Simulation Engine with a REST API (Spring Boot + PostgreSQL/H2)
 
-```
+    React + TypeScript Single Page App with dynamic metrics visualized via Chart.js
+
+    (Future) Dockerized deployment on AWS Fargate with CI/CD via GitHub Actions
+
+    (Future) Real-time metrics with Prometheus & Grafana
+
+    Comprehensive Testing: JUnit for backend, Jest for frontend — 80%+ coverage target
+
+ Tech Stack
+
+Backend: Java, Spring Boot, Spring Data JPA
+Database: PostgreSQL (prod), H2 (dev)
+Frontend: React, TypeScript, Vite, Chart.js
+Testing: JUnit (backend), Jest + React Testing Library (frontend)
+Containerization (Future): Docker
+Monitoring (Future): Micrometer, Prometheus, Grafana
+ Current State: What's Cooking?
+ Spring Boot Backend
+
+    REST API endpoints:
+
+        /simulate – Run a simulation
+
+        /simulations – Retrieve all previous runs
+
+        /metrics – Get simulation metrics
+
+    Simulation features:
+
+        Randomized inter-arrival and service times (exponential distribution)
+
+        Results persisted using JPA (H2 or PostgreSQL)
+
+        Engine supports multiple servers, self-checkouts, and queue capacity logic
+
+ React Frontend
+
+    Input simulation parameters:
+
+        Number of Servers
+
+        Number of Self-Checkouts
+
+        Max Queue Length
+
+        Number of Customers
+
+        Mean Inter-Arrival Time
+
+        Mean Service Time
+
+    Live Metrics Visualization:
+
+        Avg. Wait Time, Customers Served, Customers Left
+
+        Dual-axis Chart.js chart
+
+    Simulation History Table:
+
+        Conditional row highlighting for performance insight
+
+    System Load Factor (ρ): Displayed dynamically based on inputs
+
+ Getting Started
+1️⃣ Backend (Spring Boot)
+
+Prerequisites:
+
+    Java 21+
+
+    Ensure JAVA_HOME is set, or configure in gradle.properties
+
+Run Locally:
+
+chmod +x gradlew      # (first time only)
 ./gradlew bootRun
-```
 
-The endpoint can be tested locally using `curl`:
+    Runs at http://localhost:8080
 
-```
+    H2 Console: http://localhost:8080/h2-console
+
+        JDBC: jdbc:h2:mem:testdb
+
+        User: sa (no password)
+
+2️⃣ Frontend (React + Vite)
+
+Prerequisites:
+
+    Node.js & npm (or yarn)
+
+Run Locally:
+
+cd frontend
+npm install       # or: yarn install
+npm run dev       # or: yarn dev
+
+    Opens at http://localhost:5173
+
+    Frontend proxies API calls to localhost:8080
+
+ Simulate!
+
+    Open the frontend
+
+    Adjust simulation parameters
+
+    View ρ (System Load) instantly
+
+    Click Run Simulation
+
+    Watch charts and history table update dynamically
+
+ Simulation Parameters Explained
+Parameter	Description
+Servers	Number of human-operated service points
+Self-Checkouts	Self-service stations (same logic as servers currently)
+Max Queue Length	Total max queue size (combined for all servers/self-checkouts)
+Customers	Total number of customers in the simulation
+Mean Inter-Arrival	Avg. time between customer arrivals (exponential distribution)
+Mean Service Time	Avg. time to serve one customer (exponential distribution)
+ Future Adventures
+
+    Randomness Enhancements
+
+        Server rest times, multiple distributions, seedable RNG
+
+    Simulator Upgrades
+
+        Server-specific queues, customer priorities, server breakdowns
+
+    Advanced Visualization
+
+        Real-time queue animations, diverse chart types
+
+    Testing Focus
+
+        Broader backend unit tests
+
+        Complete frontend UI testing
+
+    Deployment & Monitoring
+
+        Full Docker + docker-compose
+
+        GitHub Actions CI/CD
+
+        Prometheus + Grafana dashboards
+
+ Quick API Test (cURL)
+
 curl 'http://localhost:8080/simulate'
-```
+
+     “If you break it, you get to keep both pieces.”
+    Contributions, forks, and ideas are always welcome!
