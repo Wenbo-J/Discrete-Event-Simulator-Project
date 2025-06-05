@@ -9,6 +9,11 @@ class Shop {
         this.stats = stats;
     }
 
+    // Method to create a new Shop instance with updated statistics
+    public Shop withNewStats(Statistics newStats) {
+        return new Shop(this.servers, newStats);
+    }
+
     Pair<String, Shop> findNextForArriveEvent(Customer customer) {
         String newEvent;
         ImList<Server> updatedServers;
@@ -64,48 +69,37 @@ class Shop {
     }
 
     Pair<Customer, Shop> findNextForDoneEvent(int serverID) {
-        
-
         Server currServer = servers.get(serverID - 1);
-        // just have a normal supplier instead of a cached one?? needs verification 
-        
-        // if resttime is larger than 0.0, go on to find the next idle 
-        // server that isn't the curr one:
-        // so it means there should either be a check of this or 
-        // that the find idle server method
-        // makes sure the server found isn't resting 
-        // (could be not resting or finished with resting) 
-
         ServerQueue currQueue = currServer.getQueue();
-        double restTime = currServer.restTime();
-        
-        ImList<Server> updatedServers;
-        Customer nextCustomer;
-        ServerQueue updatedQueue;        
+        double actualRestDuration = currServer.restTime(); // This calls our supplier
 
-        if (restTime > 0.0) {
-            Server updatedServer = currServer.updateRest(restTime);
-            updatedServers = servers.set(serverID - 1, updatedServer);
-                
-            return new Pair<Customer, Shop>(new Customer(SERVER_NEED_REST),
-                    new Shop(updatedServers, this.stats));
-
+        if (actualRestDuration > 0.0) {
+            // Server is scheduled to rest
+            Server restingServer = currServer.updateRest(actualRestDuration);
+            ImList<Server> updatedServersList = servers.set(serverID - 1, restingServer);
+            Shop shopAfterRestSignal = new Shop(updatedServersList, this.stats);
+            return new Pair<>(new Customer(SERVER_NEED_REST), shopAfterRestSignal);
         } else {
+            // Server is NOT scheduled to rest (actualRestDuration is 0.0 or less)
             if (currQueue.isEmpty()) {
-                return new Pair<Customer, Shop>(new Customer(-1), this);
+                // No rest, and queue is empty. Server becomes idle.
+                // Shop state (servers, stats) doesn't change for this specific decision step.
+                return new Pair<>(new Customer(-1), this);
+            } else {
+                // No rest, and queue is NOT empty. Server will serve the next customer from its queue.
+                Pair<Customer, ServerQueue> dequeuedPair = currQueue.dequeue();
+                Customer nextCustomerToServe = dequeuedPair.first();
+                ServerQueue newQueueForServer = dequeuedPair.second();
+
+                Server serverWithNewQueue = currServer.update(newQueueForServer);
+                ImList<Server> updatedServersList = servers.set(serverID - 1, serverWithNewQueue);
+
+                // Stats are not updated here; assumed to be handled by the event processing loop
+                // for the DoneEvent that just occurred, or by the new ServeEvent.
+                Shop shopForNextServe = new Shop(updatedServersList, this.stats);
+                return new Pair<>(nextCustomerToServe, shopForNextServe);
             }
-            Pair<Customer, ServerQueue> pair = currQueue.dequeue();
-            nextCustomer = pair.first();
-            updatedQueue = pair.second();
-        
-            Server updatedServer = currServer.update(updatedQueue);
-            updatedServers = servers.set(serverID - 1, updatedServer);
         }
-        
-        Statistics updatedStats = stats.incrementCustServed();
-        
-        return new Pair<Customer,Shop>(nextCustomer,
-                new Shop(updatedServers, updatedStats));
     }
 
     Shop nextForServeEvent(int serverID, 

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { Line } from 'react-chartjs-2';
 import {
   Chart as ChartJS,
@@ -35,17 +35,27 @@ interface SimulationResult {
   simulationTimestamp?: string;
 }
 
+const INITIAL_SERVERS = 1;
+const INITIAL_SELF_CHECKS = 0;
+const INITIAL_QMAX = 1;
+const INITIAL_NUM_CUSTOMERS = 10;
+const INITIAL_MEAN_ARRIVAL_INTERVAL = 0.5;
+const INITIAL_MEAN_SERVICE_TIME = 1.0;
+const INITIAL_MEAN_REST_TIME = 0.0;
+
 function App() {
   const [data, setData] = useState<SimulationResult[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const [servers, setServers] = useState(1);
-  const [selfChecks, setSelfChecks] = useState(0);
-  const [qmax, setQmax] = useState(1);
-  const [numCustomers, setNumCustomers] = useState(10);
-  const [meanArrivalInterval, setMeanArrivalInterval] = useState(0.5);
-  const [meanServiceTime, setMeanServiceTime] = useState(1.0);
+  // Form state
+  const [servers, setServers] = useState(INITIAL_SERVERS);
+  const [selfChecks, setSelfChecks] = useState(INITIAL_SELF_CHECKS);
+  const [qmax, setQmax] = useState(INITIAL_QMAX);
+  const [numCustomers, setNumCustomers] = useState(INITIAL_NUM_CUSTOMERS);
+  const [meanArrivalInterval, setMeanArrivalInterval] = useState(INITIAL_MEAN_ARRIVAL_INTERVAL);
+  const [meanServiceTime, setMeanServiceTime] = useState(INITIAL_MEAN_SERVICE_TIME);
+  const [meanRestTime, setMeanRestTime] = useState(INITIAL_MEAN_REST_TIME);
 
   // Calculate theoretical load factor (rho)
   let rho = 0;
@@ -58,7 +68,7 @@ function App() {
     }
   }
 
-  const fetchData = () => {
+  const fetchData = useCallback(() => {
     setLoading(true);
     fetch('/simulations')
       .then((res) => res.json())
@@ -71,11 +81,11 @@ function App() {
         setError("Failed to load existing simulations.");
         setLoading(false);
       });
-  };
+  }, []);
 
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [fetchData]);
 
   const handleRunSimulation = () => {
     setLoading(true);
@@ -87,6 +97,7 @@ function App() {
       customers: numCustomers.toString(),
       meanArrivalInterval: meanArrivalInterval.toString(),
       meanServiceTime: meanServiceTime.toString(),
+      meanRestTime: meanRestTime.toString(),
     });
 
     fetch(`/simulate?${params.toString()}`)
@@ -179,6 +190,17 @@ function App() {
     },
   };
 
+  const handleResetParameters = useCallback(() => {
+    setServers(INITIAL_SERVERS);
+    setSelfChecks(INITIAL_SELF_CHECKS);
+    setQmax(INITIAL_QMAX);
+    setNumCustomers(INITIAL_NUM_CUSTOMERS);
+    setMeanArrivalInterval(INITIAL_MEAN_ARRIVAL_INTERVAL);
+    setMeanServiceTime(INITIAL_MEAN_SERVICE_TIME);
+    setMeanRestTime(INITIAL_MEAN_REST_TIME);
+    setError(null); // Also clear any existing error messages
+  }, []); // useCallback to memoize the function if needed, though not strictly necessary here without complex dependencies
+
   return (
     <div className="App">
       <h1>Discrete Event Simulator</h1>
@@ -197,15 +219,24 @@ function App() {
           <label>Mean Inter-Arrival Time: <input type="number" step="0.1" value={meanArrivalInterval} onChange={e => setMeanArrivalInterval(Math.max(0.01, parseFloat(e.target.value)))} /></label>
           <label>Mean Service Time: <input type="number" step="0.1" value={meanServiceTime} onChange={e => setMeanServiceTime(Math.max(0.01, parseFloat(e.target.value)))} /></label>
         </div>
+        <div>
+          <label>Mean Rest Time (Servers): <input type="number" step="0.1" value={meanRestTime} onChange={e => setMeanRestTime(Math.max(0, parseFloat(e.target.value)))} /></label>
+        </div>
         <div className="load-factor-display">
           <p>Theoretical System Load (ρ): {rho.toFixed(3)} ({Math.max(0, rho * 100).toFixed(1)}%)</p>
           {rho > 1 && <p style={{ color: 'orange' }}>Warning: System is Overloaded (ρ &gt; 1)! Expect long queues/many lost customers.</p>}
           {rho === 1 && <p style={{ color: 'blue' }}>System is Critically Balanced (ρ = 1).</p>}
           {rho < 0.3 && rho > 0 && <p style={{ color: 'green' }}>System is Lightly Loaded (ρ &lt; 0.3).</p>}
+          {meanRestTime > 0 && <p style={{ color: 'purple', fontSize: '0.9em', marginTop: '5px' }}>Note: Theoretical load does not account for server rest times. Actual load may be higher.</p>}
         </div>
-        <button onClick={handleRunSimulation} disabled={loading}>
-          {loading ? 'Running...' : 'Run Simulation'}
-        </button>
+        <div className="simulation-buttons">
+          <button onClick={handleRunSimulation} disabled={loading}>
+            {loading ? 'Running...' : 'Run Simulation'}
+          </button>
+          <button onClick={handleResetParameters} disabled={loading} className="reset-button">
+            Reset Parameters
+          </button>
+        </div>
         {error && <p className="error-message">Error: {error}</p>}
       </div>
 

@@ -20,17 +20,15 @@ class BackFromRestEvent extends Event {
         Customer nextCustomer = pair.first();
         ServerQueue updatedQueue = pair.second();
 
-        // here, the server is gonna rest, and serve the next inqueue cust
-        // after server finishes resting
-
-        Server updatedServer = currServer.update(updatedQueue);
-        ImList<Server> updatedServers = shop.updateServers(serverID, updatedServer);
-        Event newEvent = new ServeEvent(nextCustomer,
-                updatedServer.getTime(),
-                updatedServer.getID(), false, shop);
-        Statistics updatedStatistics = shop.getStats().incrementCustServed();
-        Shop updatedShop = new Shop(updatedServers, updatedStatistics);
-        return new Pair<Event,Shop>(newEvent, updatedShop);
+        Server serverWithNewQueue = currServer.update(updatedQueue);
+        ImList<Server> updatedServers = shop.updateServers(serverID, serverWithNewQueue);
+        
+        Event newServeEvent = new ServeEvent(nextCustomer,
+                serverWithNewQueue.getTime(),
+                serverWithNewQueue.getID(), false, shop);
+        
+        Shop finalShop = new Shop(updatedServers, shop.getStats()); 
+        return new Pair<Event,Shop>(newServeEvent, finalShop);
     }
 
     @Override

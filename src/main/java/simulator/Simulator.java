@@ -65,62 +65,59 @@ public class Simulator {
             Pair<Event, PQ<Event>> pair = eventsPQ.poll();
             Event event = pair.first();
             eventsPQ = pair.second();
-            // update the server with the second() of pair returned from
-            // nextEvent() by set() the ImList<Server> and 
-            // reassign the new ImList<Server> to the current one
-            // figure out which server is free here?
 
-            Pair<Event, Shop> pairES = event.nextEvent(shop);
-            Event theNextEvent = pairES.first();
-            Shop updatedShop = pairES.second();
+            Shop shopBeforeEventSpecificHandling = shop; // Initial shop state for this event iteration
+
+            // Allow the event its own chance to update shop and suggest a next event
+            // (though for DoneEvent, nextEvent() currently just returns itself and original shop)
+            Pair<Event, Shop> pairES = event.nextEvent(shopBeforeEventSpecificHandling);
+            Event theNextEventFromEventItself = pairES.first();
+            shop = pairES.second(); // Apply shop changes from event.nextEvent()
 
             if (event instanceof DoneEvent) {
+                // A service has just completed. Update statistics for the served customer.
+                shop = shop.withNewStats(shop.getStats().incrementCustServed());
+
                 int serverID = ((DoneEvent) event).getServerID();
-                Server eventServer = shop.accessParticularServer(serverID);
-                if (!eventServer.isHuman()) {
-                    serverID = eventServer.getID();
+                Server currentServerState = shop.accessParticularServer(serverID);
+                
+                // This self-check logic might need review if self-checks are to rest individually.
+                // For now, it ensures serverID points to the main SelfCheckServer if applicable.
+                if (!currentServerState.isHuman()) {
+                    serverID = currentServerState.getID(); 
                 }
 
+                // Determine server's next action (rest, serve from queue, or idle)
+                Pair<Customer,Shop> pairCS = shop.findNextForDoneEvent(serverID); 
+                Customer nextCustomerSignal = pairCS.first();
+                shop = pairCS.second(); // Shop is further updated by findNextForDoneEvent
 
-                Pair<Customer,Shop> pairCS = shop.findNextForDoneEvent(serverID);
-                Customer nextCustomer = pairCS.first();
-                updatedShop = pairCS.second();
-                if (nextCustomer.getID() > -1) {
-                    // create new ServeEvent IF AND ONLY IF the Server's queue has any customer left
-                    Server updatedServer = updatedShop.accessParticularServer(serverID);
-
-                    double timeNow = updatedServer.getTime() + SMALL_NUMBER;
-
-                    Event newEvent = new ServeEvent(nextCustomer,
-                            updatedServer.getTime(),
-                            updatedServer.actualServeID(timeNow), true, shop);
-
-                    // updatedShop = updatedShop.updateServers(serverID, updatedServer, 
-                    // nextCustomer, timeNow);
-
-                    eventsPQ = eventsPQ.add(newEvent);
-                } else if (nextCustomer.getID() == SERVER_NEED_REST) {
-                    // server went resting
-                    Server updatedServer = updatedShop.accessParticularServer(serverID);
-                    Event newEvent = new BackFromRestEvent(nextCustomer,
-                            updatedServer.getTime(),
-                            updatedServer.getID(), updatedShop);
-                    eventsPQ = eventsPQ.add(newEvent);
+                if (nextCustomerSignal.getID() > -1) { // Actual next customer from queue
+                    Server serverForNextServe = shop.accessParticularServer(serverID);
+                    double serviceStartTime = Math.max(event.getTime(), serverForNextServe.getTime()); // Serve when server is free and customer done
+                    
+                    Event newServeEvent = new ServeEvent(nextCustomerSignal,
+                            serviceStartTime, // Serve when server actually becomes free
+                            serverForNextServe.actualServeID(serviceStartTime), true, shop);
+                    eventsPQ = eventsPQ.add(newServeEvent);
+                } else if (nextCustomerSignal.getID() == SERVER_NEED_REST) { // Server went resting
+                    Server restingServer = shop.accessParticularServer(serverID);
+                    Event newBackFromRestEvent = new BackFromRestEvent(new Customer(SERVER_NEED_REST), // Dummy customer for BackFromRestEvent
+                            restingServer.getTime(), // This is the future time when rest ends
+                            restingServer.getID(), shop);
+                    eventsPQ = eventsPQ.add(newBackFromRestEvent);
                 }
+                // If nextCustomerSignal.getID() == -1, server becomes idle, no new event scheduled from here.
             }
 
-            shop = updatedShop;
+            // shop = updatedShop; // This was the old way, shop is updated incrementally now
 
             if (!event.toString().equals("")) {
-                // this check above is to ensure no empty line is printed
-                // if BackFromRestEvent is the nextEvent
-                // Don't know how to have a better way for now...
-
                 System.out.println(event);
             }
-            // see if the below needs update
-            if (theNextEvent != event) {
-                eventsPQ = eventsPQ.add(theNextEvent);
+
+            if (theNextEventFromEventItself != event) { // If event.nextEvent() scheduled a new, different event
+                eventsPQ = eventsPQ.add(theNextEventFromEventItself);
             }
         }
 

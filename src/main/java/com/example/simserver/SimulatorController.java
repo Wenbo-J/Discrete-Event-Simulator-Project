@@ -55,7 +55,7 @@ public class SimulatorController {
                                  @RequestParam(defaultValue = "10") int customers,
                                  @RequestParam(defaultValue = "0.5") double meanArrivalInterval,
                                  @RequestParam(defaultValue = "1.0") double meanServiceTime,
-                                 @RequestParam(defaultValue = "0.0") double meanRestTime // Added for future, currently hardcoded to no rest
+                                 @RequestParam(defaultValue = "0.0") double meanRestTime
                                 ) {
 
         ImList<Pair<Double, Supplier<Double>>> inputTimes = new ImList<>();
@@ -70,12 +70,14 @@ public class SimulatorController {
             inputTimes = inputTimes.add(new Pair<>(currentArrivalTime, serviceTimeSupplier));
         }
         
-        // Rest time supplier, currently 0.0 (no rest) - can be enhanced with meanRestTime
-        Supplier<Double> restTimes = () -> 0.0; // For now, keep rests deterministic (none)
-        // If you want random rest times: () -> generateExponentialVariate(meanRestTime)
-        // but ensure the core simulator logic handles server rests appropriately.
+        Supplier<Double> actualRestTimesSupplier;
+        if (meanRestTime <= 0) {
+            actualRestTimesSupplier = () -> 0.0;
+        } else {
+            actualRestTimesSupplier = () -> generateExponentialVariate(meanRestTime);
+        }
 
-        Simulator sim = new Simulator(servers, selfChecks, qmax, inputTimes, restTimes);
+        Simulator sim = new Simulator(servers, selfChecks, qmax, inputTimes, actualRestTimesSupplier);
         String resultString = sim.simulate();
         
         SimulationResult simResult = parseAndCreateResult(servers, selfChecks, qmax, customers, resultString);
