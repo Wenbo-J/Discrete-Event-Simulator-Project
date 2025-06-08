@@ -49,4 +49,8 @@ class ServerQueue {
     boolean isEmpty() {
         return queue.isEmpty();
     }
+
+    public boolean containsCustomer(Customer c) {
+        return queue.contains(c);
+    }
 }

@@ -2,28 +2,6 @@ package simulator;
 import java.util.Comparator;
 import java.util.PriorityQueue;
 
-/**
- * An immutable and unbounded priority queue based on a priority heap.
- * The elements of the priority queue are ordered according to their
- * a {@link Comparator} provided at queue construction time. A priority
- * queue does not permit {@code null} elements.
- *
- * <p>The <em>head</em> of this queue is the <em>least</em> element
- * with respect to the specified ordering.  If multiple elements are
- * tied for least value, the head is one of those elements -- ties are
- * broken arbitrarily.  The queue retrieval operation {@code poll},
- * access the element at the head of the queue.
- *
- * <p>A priority queue is unbounded, but has an internal
- * <i>capacity</i> governing the size of an array used to store the
- * elements on the queue.  It is always at least as large as the queue
- * size.  As elements are added to a priority queue, its capacity
- * grows automatically.  The details of the growth policy are not
- * specified.
- *
- * @author cs2030
- * @param <E> the type of elements held in this queue
- */
 public class PQ<E> {
     private final PriorityQueue<E> pq;
 
@@ -76,6 +54,9 @@ public class PQ<E> {
         return new Pair<E,PQ<E>>(t, copy);
     }
 
+    public boolean contains(E element) {
+        return this.pq.contains(element);
+    }
 
     /**
      * Returns a string representation of this priority queue.  The string

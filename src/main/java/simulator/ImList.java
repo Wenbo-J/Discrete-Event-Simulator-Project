@@ -4,13 +4,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Iterator;
 
-/**
- * An immutable implementation of the {@code ArrayList} using an 
- * immutable delegation design pattern.
- *
- * @author  cs2030
- * @param <E> the type of elements in this list
- */
+
 public class ImList<E> implements Iterable<E> {
     private final ArrayList<E> elems;
 

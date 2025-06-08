@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="simulator.ShopTest" tests="4" skipped="0" failures="0" errors="0" timestamp="2025-06-08T12:10:31.746Z" hostname="wEnBo-2.local" time="0.003">
+  <properties/>
+  <testcase name="testFindNextForDoneEventRest()" classname="simulator.ShopTest" time="0.001"/>
+  <testcase name="testFindNextForDoneEventQueue()" classname="simulator.ShopTest" time="0.0"/>
+  <testcase name="testUpdateStatsForLeave()" classname="simulator.ShopTest" time="0.0"/>
+  <testcase name="testEnqueueCustomer()" classname="simulator.ShopTest" time="0.001"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

@@ -49,6 +49,22 @@ class Statistics {
                 numOfCustomers - 1);
     }
 
+    public boolean allCustomersWereServed() {
+        return numCustServed == numOfCustomers;
+    }
+
+    public boolean anyCustomersLeft() {
+        return numCustLeft > 0;
+    }
+
+    public boolean noCustomersWaited() {
+        return totalWaitTime == 0.0;
+    }
+
+    public boolean hasNonZeroWaitTime() {
+        return totalWaitTime > 0.0;
+    }
+
     @Override
     public String toString() {
         return String.format("[%.3f %d %d]",
