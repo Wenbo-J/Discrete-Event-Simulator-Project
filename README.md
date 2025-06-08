@@ -142,8 +142,6 @@ Mean Service Time	Avg. time to serve one customer (exponential distribution)
 
     Testing Focus
 
-        Broader backend unit tests
-
         Complete frontend UI testing
 
     Deployment & Monitoring
