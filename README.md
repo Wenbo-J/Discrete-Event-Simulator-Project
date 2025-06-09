@@ -141,8 +141,7 @@ Mean Service Time	Avg. time to serve one customer (exponential distribution)
         Real-time queue animations, diverse chart types
 
     Testing Focus
-
-        Complete frontend UI testing
+        Add more tests
 
     Deployment & Monitoring
 
