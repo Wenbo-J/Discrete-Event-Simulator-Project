@@ -18,8 +18,8 @@
     "*.js",
     "*.ts",
     "src/**/*.test.ts",
-    "src/**/*.test.tsx"
-  ],
+    "src/**/*.test.tsx", 
+    "jest.config.cjs"],
   "references": [
     { "path": "./tsconfig.node.json" },
     { "path": "./tsconfig.app.json" }

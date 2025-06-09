@@ -208,7 +208,7 @@ function App() {
       <div className="simulation-controls">
         <h2>Run New Simulation</h2>
         <div>
-          <label>Servers: <input type="number" value={servers} onChange={e => setServers(Math.max(1, parseInt(e.target.value)))} /></label>
+          <label>Servers: <input data-testid="servers-input" type="number" value={servers} onChange={e => setServers(Math.max(1, parseInt(e.target.value)))} /></label>
           <label>Self-Checkouts: <input type="number" value={selfChecks} onChange={e => setSelfChecks(Math.max(0, parseInt(e.target.value)))} /></label>
         </div>
         <div>
@@ -230,10 +230,10 @@ function App() {
           {meanRestTime > 0 && <p style={{ color: 'purple', fontSize: '0.9em', marginTop: '5px' }}>Note: Theoretical load does not account for server rest times. Actual load may be higher.</p>}
         </div>
         <div className="simulation-buttons">
-          <button onClick={handleRunSimulation} disabled={loading}>
+          <button data-testid="run-simulation" onClick={handleRunSimulation} disabled={loading}>
             {loading ? 'Running...' : 'Run Simulation'}
           </button>
-          <button onClick={handleResetParameters} disabled={loading} className="reset-button">
+          <button data-testid="reset-parameters" onClick={handleResetParameters} disabled={loading} className="reset-button">
             Reset Parameters
           </button>
         </div>
