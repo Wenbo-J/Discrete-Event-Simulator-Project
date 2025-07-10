@@ -70,7 +70,7 @@ function App() {
 
   const fetchData = useCallback(() => {
     setLoading(true);
-    fetch('/simulations')
+    fetch('/api/simulations')
       .then((res) => res.json())
       .then((d: SimulationResult[]) => {
         setData(d.sort((a, b) => new Date(b.simulationTimestamp || 0).getTime() - new Date(a.simulationTimestamp || 0).getTime()));
@@ -100,14 +100,14 @@ function App() {
       meanRestTime: meanRestTime.toString(),
     });
 
-    fetch(`/simulate?${params.toString()}`)
+    fetch(`/api/simulate?${params.toString()}`)
       .then(res => {
         if (!res.ok) {
           throw new Error(`Simulation request failed with status ${res.status}`);
         }
         return res.json();
       })
-      .then((newResult: SimulationResult) => {
+      .then((_newResult: SimulationResult) => {
         fetchData();
       })
       .catch(err => {
