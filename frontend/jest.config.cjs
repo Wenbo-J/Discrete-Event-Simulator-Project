@@ -1,12 +1,22 @@
 module.exports = {
   preset: 'ts-jest',
   testEnvironment: 'jsdom',
-  setupFilesAfterEnv: ['@testing-library/jest-dom'],
+  setupFilesAfterEnv: ['<rootDir>/src/setupTests.ts'],
   moduleNameMapper: {
-    '\\.(css|less|scss|sass)$': 'identity-obj-proxy', // Mock CSS imports
-    '^.+\\.svg$': 'jest-transformer-svg', // If you use SVGs
+    '\\.(css|less|scss|sass)$': 'identity-obj-proxy',
+    '^.+\\.svg$': 'jest-transformer-svg',
   },
   transform: {
-    '^.+\\.tsx?$': ['ts-jest', { /* ts-jest config options here */ }],
+    '^.+\\.(ts|tsx)$': ['ts-jest', {
+      useESM: true,
+    }],
+  },
+  extensionsToTreatAsEsm: ['.ts', '.tsx'],
+  moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json'],
+  testMatch: ['**/__tests__/**/*.(ts|tsx|js)', '**/*.(test|spec).(ts|tsx|js)'],
+  globals: {
+    'ts-jest': {
+      useESM: true,
+    },
   },
 }; 

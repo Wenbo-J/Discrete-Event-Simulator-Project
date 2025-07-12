@@ -6,8 +6,8 @@ on:
 
 env:
   REGISTRY: ghcr.io
-  IMAGE_BACKEND: ${{ github.repository }}-backend
-  IMAGE_FRONTEND: ${{ github.repository }}-frontend
+  IMAGE_BACKEND: discrete-event-simulator-backend
+  IMAGE_FRONTEND: discrete-event-simulator-frontend
   # To switch to AWS ECR, set REGISTRY and image names accordingly
 
 jobs:
@@ -31,18 +31,18 @@ jobs:
       # Build and push backend image
       - name: Build backend image
         run: |
-          docker build -t ${{ env.REGISTRY }}/${{ env.IMAGE_BACKEND }}:latest .
+          docker build -t ${{ env.REGISTRY }}/${{ github.actor }}/${{ env.IMAGE_BACKEND }}:latest .
       - name: Push backend image
         run: |
-          docker push ${{ env.REGISTRY }}/${{ env.IMAGE_BACKEND }}:latest
+          docker push ${{ env.REGISTRY }}/${{ github.actor }}/${{ env.IMAGE_BACKEND }}:latest
 
       # Build and push frontend image
       - name: Build frontend image
         run: |
-          docker build -t ${{ env.REGISTRY }}/${{ env.IMAGE_FRONTEND }}:latest ./frontend
+          docker build -t ${{ env.REGISTRY }}/${{ github.actor }}/${{ env.IMAGE_FRONTEND }}:latest ./frontend
       - name: Push frontend image
         run: |
-          docker push ${{ env.REGISTRY }}/${{ env.IMAGE_FRONTEND }}:latest
+          docker push ${{ env.REGISTRY }}/${{ github.actor }}/${{ env.IMAGE_FRONTEND }}:latest
 
 # To switch to AWS ECR:
 # - Set REGISTRY to ECR registry URL
