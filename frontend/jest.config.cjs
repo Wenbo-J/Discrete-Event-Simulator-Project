@@ -5,6 +5,7 @@ module.exports = {
   moduleNameMapper: {
     '\\.(css|less|scss|sass)$': 'identity-obj-proxy',
     '^.+\\.svg$': 'jest-transformer-svg',
+    '^react-chartjs-2$': '<rootDir>/src/__mocks__/react-chartjs-2.tsx',
   },
   transform: {
     '^.+\\.(ts|tsx)$': ['ts-jest', {
@@ -13,10 +14,5 @@ module.exports = {
   },
   extensionsToTreatAsEsm: ['.ts', '.tsx'],
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json'],
-  testMatch: ['**/__tests__/**/*.(ts|tsx|js)', '**/*.(test|spec).(ts|tsx|js)'],
-  globals: {
-    'ts-jest': {
-      useESM: true,
-    },
-  },
+  testMatch: ['**/__tests__/**/*.(ts|tsx)', '**/*.(test|spec).(ts|tsx)'],
 }; 
