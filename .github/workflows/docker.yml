@@ -8,7 +8,6 @@ env:
   REGISTRY: ghcr.io
   IMAGE_BACKEND: discrete-event-simulator-backend
   IMAGE_FRONTEND: discrete-event-simulator-frontend
-  ACTOR: ${{ github.actor && toLower(github.actor) }}
   # To switch to AWS ECR, set REGISTRY and image names accordingly
 
 jobs:
@@ -25,25 +24,29 @@ jobs:
         uses: docker/login-action@v3
         with:
           registry: ${{ env.REGISTRY }}
-          username: ${{ env.ACTOR }}
+          username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
           # For AWS ECR, use: aws-actions/amazon-ecr-login@v2
 
       # Build and push backend image
       - name: Build backend image
         run: |
-          docker build -t ${{ env.REGISTRY }}/${{ env.ACTOR }}/${{ env.IMAGE_BACKEND }}:latest .
+          ACTOR_LOWER=$(echo "${{ github.actor }}" | tr '[:upper:]' '[:lower:]')
+          docker build -t ${{ env.REGISTRY }}/$ACTOR_LOWER/${{ env.IMAGE_BACKEND }}:latest .
       - name: Push backend image
         run: |
-          docker push ${{ env.REGISTRY }}/${{ env.ACTOR }}/${{ env.IMAGE_BACKEND }}:latest
+          ACTOR_LOWER=$(echo "${{ github.actor }}" | tr '[:upper:]' '[:lower:]')
+          docker push ${{ env.REGISTRY }}/$ACTOR_LOWER/${{ env.IMAGE_BACKEND }}:latest
 
       # Build and push frontend image
       - name: Build frontend image
         run: |
-          docker build -t ${{ env.REGISTRY }}/${{ env.ACTOR }}/${{ env.IMAGE_FRONTEND }}:latest ./frontend
+          ACTOR_LOWER=$(echo "${{ github.actor }}" | tr '[:upper:]' '[:lower:]')
+          docker build -t ${{ env.REGISTRY }}/$ACTOR_LOWER/${{ env.IMAGE_FRONTEND }}:latest ./frontend
       - name: Push frontend image
         run: |
-          docker push ${{ env.REGISTRY }}/${{ env.ACTOR }}/${{ env.IMAGE_FRONTEND }}:latest
+          ACTOR_LOWER=$(echo "${{ github.actor }}" | tr '[:upper:]' '[:lower:]')
+          docker push ${{ env.REGISTRY }}/$ACTOR_LOWER/${{ env.IMAGE_FRONTEND }}:latest
 
 # To switch to AWS ECR:
 # - Set REGISTRY to ECR registry URL
