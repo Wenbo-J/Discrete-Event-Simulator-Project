@@ -1,7 +1,5 @@
-import React from 'react';
-
 // Mock the Line component from react-chartjs-2
-export const Line = ({ data, options }: any) => {
+export const Line = ({ data, options: _options }: any) => {
   return (
     <div data-testid="chart-line">
       <div>Chart: {data?.datasets?.length || 0} datasets</div>
