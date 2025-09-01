@@ -1,159 +1,70 @@
-Discrete Event Simulator 
+# Discrete-Event Simulator
 
-Welcome to a rather spiffy Scalable Web Platform for Discrete-Event System Simulation. This project simulates complex systems, visualizes performance, and provides near real-time observability. Whether you're modeling intergalactic spaceports or coffee shop queues, this platform has you covered — complete with snazzy charts and insightful metrics.
- Core Goals (The Grand Plan)
+A scalable **web platform for discrete-event system simulation**.  
+Model anything from intergalactic spaceports to coffee shop queues — complete with **real-time visualization, insightful metrics, and a modular architecture**.
 
-    Modular OOP-Based Event Simulation Engine with a REST API (Spring Boot + PostgreSQL/H2)
+---
 
-    React + TypeScript Single Page App with dynamic metrics visualized via Chart.js
+## Core Goals
+- **Modular OOP-based simulation engine** with REST API (Spring Boot + JPA)
+- **Interactive frontend** (React + TypeScript + Chart.js)
+- **Persistence** with PostgreSQL (prod) and H2 (dev)
+- **Testing**: JUnit (backend), Jest + React Testing Library (frontend)
+- **Future**: Dockerized deployment (AWS Fargate + CI/CD via GitHub Actions)
+- **Future**: Observability with Prometheus & Grafana
 
-    (Future) Dockerized deployment on AWS Fargate with CI/CD via GitHub Actions
+---
 
-    (Future) Real-time metrics with Prometheus & Grafana
+## Tech Stack
+**Backend**
+- Java 21, Spring Boot, Spring Data JPA
+- PostgreSQL (prod) / H2 (dev)
 
-    Comprehensive Testing: JUnit for backend, Jest for frontend — 80%+ coverage target
+**Frontend**
+- React, TypeScript, Vite
+- Chart.js for dynamic visualizations
 
- Tech Stack
+**Testing**
+- JUnit (backend)
+- Jest + React Testing Library (frontend)
 
-Backend: Java, Spring Boot, Spring Data JPA
-Database: PostgreSQL (prod), H2 (dev)
-Frontend: React, TypeScript, Vite, Chart.js
-Testing: JUnit (backend), Jest + React Testing Library (frontend)
-Containerization (Future): Docker
-Monitoring (Future): Micrometer, Prometheus, Grafana
- Current State: What's Cooking?
- Spring Boot Backend
+**Future**
+- Docker, Micrometer, Prometheus, Grafana
 
-    REST API endpoints:
+---
 
-        /simulate – Run a simulation
+## Current Features
 
-        /simulations – Retrieve all previous runs
+### Backend (Spring Boot)
+- REST API endpoints:
+  - `POST /simulate` → Run a new simulation
+  - `GET /simulations` → Retrieve past runs
+  - `GET /metrics` → Fetch aggregated metrics
+- Simulation engine:
+  - Randomized interarrival & service times (exponential distribution)
+  - Multi-server, self-checkout, and queue capacity support
+  - Results persisted with JPA (H2/Postgres)
 
-        /metrics – Get simulation metrics
+### Frontend (React + Vite)
+- Input simulation parameters:
+  - Number of servers, self-checkouts, max queue length, total customers
+  - Mean inter-arrival & service times
+- Live metrics visualization:
+  - Avg. wait time, customers served, customers left
+  - Dual-axis charts via Chart.js
+- Simulation history table with performance highlighting
+- System load factor (ρ) displayed dynamically
 
-    Simulation features:
+---
 
-        Randomized inter-arrival and service times (exponential distribution)
+## Getting Started
 
-        Results persisted using JPA (H2 or PostgreSQL)
+### Backend (Spring Boot)
+**Prerequisites**
+- Java 21+
+- `JAVA_HOME` set (or configured in `gradle.properties`)
 
-        Engine supports multiple servers, self-checkouts, and queue capacity logic
-
- React Frontend
-
-    Input simulation parameters:
-
-        Number of Servers
-
-        Number of Self-Checkouts
-
-        Max Queue Length
-
-        Number of Customers
-
-        Mean Inter-Arrival Time
-
-        Mean Service Time
-
-    Live Metrics Visualization:
-
-        Avg. Wait Time, Customers Served, Customers Left
-
-        Dual-axis Chart.js chart
-
-    Simulation History Table:
-
-        Conditional row highlighting for performance insight
-
-    System Load Factor (ρ): Displayed dynamically based on inputs
-
- Getting Started
-1️⃣ Backend (Spring Boot)
-
-Prerequisites:
-
-    Java 21+
-
-    Ensure JAVA_HOME is set, or configure in gradle.properties
-
-Run Locally:
-
-chmod +x gradlew      # (first time only)
+**Run Locally**
+```bash
+chmod +x gradlew        # first time only
 ./gradlew bootRun
-
-    Runs at http://localhost:8080
-
-    H2 Console: http://localhost:8080/h2-console
-
-        JDBC: jdbc:h2:mem:testdb
-
-        User: sa (no password)
-
-2️⃣ Frontend (React + Vite)
-
-Prerequisites:
-
-    Node.js & npm (or yarn)
-
-Run Locally:
-
-cd frontend
-npm install       # or: yarn install
-npm run dev       # or: yarn dev
-
-    Opens at http://localhost:5173
-
-    Frontend proxies API calls to localhost:8080
-
- Simulate!
-
-    Open the frontend
-
-    Adjust simulation parameters
-
-    View ρ (System Load) instantly
-
-    Click Run Simulation
-
-    Watch charts and history table update dynamically
-
- Simulation Parameters Explained
-Parameter	Description
-Servers	Number of human-operated service points
-Self-Checkouts	Self-service stations (same logic as servers currently)
-Max Queue Length	Total max queue size (combined for all servers/self-checkouts)
-Customers	Total number of customers in the simulation
-Mean Inter-Arrival	Avg. time between customer arrivals (exponential distribution)
-Mean Service Time	Avg. time to serve one customer (exponential distribution)
- Future Adventures
-
-    Randomness Enhancements
-
-        Server rest times, multiple distributions, seedable RNG
-
-    Simulator Upgrades
-
-        Server-specific queues, customer priorities, server breakdowns
-
-    Advanced Visualization
-
-        Real-time queue animations, diverse chart types
-
-    Testing Focus
-        Add more tests
-
-    Deployment & Monitoring
-
-        Full Docker + docker-compose
-
-        GitHub Actions CI/CD
-
-        Prometheus + Grafana dashboards
-
- Quick API Test (cURL)
-
-curl 'http://localhost:8080/simulate'
-
-     “If you break it, you get to keep both pieces.”
-    Contributions, forks, and ideas are always welcome!
