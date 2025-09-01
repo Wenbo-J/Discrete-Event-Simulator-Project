@@ -68,3 +68,20 @@ Model anything from intergalactic spaceports to coffee shop queues — complete 
 ```bash
 chmod +x gradlew        # first time only
 ./gradlew bootRun
+App runs at: http://localhost:8080
+
+H2 Console
+
+URL: http://localhost:8080/h2-console
+
+JDBC: jdbc:h2:mem:testdb
+
+User: sa (no password)
+
+### Frontend (React + Vite)
+
+**Prerequisites**
+
+Node.js + npm (or yarn)
+
+Run Locally
